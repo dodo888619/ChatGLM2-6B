@@ -15,7 +15,7 @@ choice_tokens = [tokenizer.encode(choice, add_special_tokens=False)[0] for choic
 
 
 def build_prompt(text):
-    return "[Round {}]\n\n问：{}\n\n答：".format(1, text)
+    return f"[Round {1}]\n\n问：{text}\n\n答："
 
 
 extraction_prompt = '综上所述，ABCD中正确的选项是：'
@@ -25,8 +25,7 @@ with torch.no_grad():
     for entry in glob.glob("./CEval/val/**/*.jsonl", recursive=True):
         dataset = []
         with open(entry, encoding='utf-8') as file:
-            for line in file:
-                dataset.append(json.loads(line))
+            dataset.extend(json.loads(line) for line in file)
         correct = 0
         dataloader = torch.utils.data.DataLoader(dataset, batch_size=8)
         for batch in tqdm(dataloader):
@@ -54,7 +53,7 @@ with torch.no_grad():
         count_dict[entry] = len(dataset)
 
 acc_total, count_total = 0.0, 0
-for key in accuracy_dict:
-    acc_total += accuracy_dict[key] * count_dict[key]
+for key, value in accuracy_dict.items():
+    acc_total += value * count_dict[key]
     count_total += count_dict[key]
 print(acc_total / count_total)

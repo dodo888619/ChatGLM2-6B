@@ -43,7 +43,7 @@ async def create_item(request: Request):
         "status": 200,
         "time": time
     }
-    log = "[" + time + "] " + '", prompt:"' + prompt + '", response:"' + repr(response) + '"'
+    log = f'[{time}] ", prompt:"{prompt}", response:"{repr(response)}"'
     print(log)
     torch_gc()
     return answer

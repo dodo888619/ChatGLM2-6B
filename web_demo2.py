@@ -40,7 +40,7 @@ if 'history' not in st.session_state:
 if 'past_key_values' not in st.session_state:
     st.session_state.past_key_values = None
 
-for i, (query, response) in enumerate(st.session_state.history):
+for query, response in st.session_state.history:
     with st.chat_message(name="user", avatar="user"):
         st.markdown(query)
     with st.chat_message(name="assistant", avatar="assistant"):
@@ -54,9 +54,7 @@ prompt_text = st.text_area(label="用户命令输入",
                            height=100,
                            placeholder="请在这儿输入您的命令")
 
-button = st.button("发送", key="predict")
-
-if button:
+if button := st.button("发送", key="predict"):
     input_placeholder.markdown(prompt_text)
     history, past_key_values = st.session_state.history, st.session_state.past_key_values
     for response, history, past_key_values in model.stream_chat(tokenizer, prompt_text, history,
